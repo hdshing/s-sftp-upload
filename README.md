@@ -10,7 +10,7 @@
 npm install s-sftp-upload
 ```
 
-## 最基本用法
+## 简单示例
 
 ``` javascript
 const path = require('path');
