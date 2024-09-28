@@ -1,0 +1,18 @@
+{
+  "name": "s-ftp-upload",
+  "version": "1.0.0",
+  "author": "shing0727@foxmail.com",
+  "description": "一个简单的ftp上传工具，主要用于项目部署并可选将指定文件夹打包备份。",
+  "keywords": ["ftp","上传文件","项目部署"],
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "fast-glob": "^3.3.2",
+    "progress": "^2.0.3",
+    "ssh2-sftp-client": "^11.0.0"
+  }
+}

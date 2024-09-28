@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+**/node_modules/
+id_rsa
+**/id_rsa
+**/dist/
+
+test/node_sftp/local
+test/node_compression/dist
