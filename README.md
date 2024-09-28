@@ -1,4 +1,4 @@
-# s-ftp-upload
+# s-sftp-upload
 
 一个简单的ftp上传工具包，创建目的主要是用于项目打包部署代码。
 将指定本地目录上传到远程服务器指定目录中。
@@ -7,14 +7,14 @@
 ## 安装
 
 ```javascript
-npm install s-ftp-upload
+npm install s-sftp-upload
 ```
 
 ## 最基本用法
 
 ``` javascript
 const path = require('path');
-const ftpUpload = require('s-ftp-upload');
+const ftpUpload = require('s-sftp-upload');
 
 const ftpU = new ftpUpload({
     host: 'xx.xx.xx.xx',  // 必填，ftp服务器地址
