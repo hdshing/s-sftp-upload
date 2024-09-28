@@ -28,3 +28,16 @@ const ftpU = new ftpUpload({
 ftpU.start()
 ```
 
+
+
+## 参数配置
+
+| Option     | Value  | Description                                                  |
+| ---------- | ------ | ------------------------------------------------------------ |
+| host       | String | 必填，服务器主机地址，例：’x.x.x.x'                          |
+| port       | Number | 必填，端口，例：22 （一般默认22）                            |
+| username   | String | 必填，服务器用户名，例：root                                 |
+| password   | String | 必填，服务器用户密码，例：123456                             |
+| localPath  | String | 必填，指定本地需上传的目录，*需要绝对路径<br />例：path.resolve(__dirname, './xxx') |
+| remotePath | String | 必填，指定上传到远程服务器的目录，*需确保目录存在<br />例：'/app/bus/admin' |
+
