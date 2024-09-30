@@ -1,8 +1,8 @@
 <p align="center">
   <a target="_blank" href="https://www.npmjs.com/package/s-sftp-upload">
-    <img alt="s-sftp-upload logo" src="https://img.xwyue.com/i/2024/09/30/66fa59c2cb6f9.png" width=200>
+    <img alt="s-sftp-upload logo" src="https://img.xwyue.com/i/2024/09/30/66fa59c2cb6f9.png" width="200">
   </a>
-  <p></p>
+  <br/>
 </p>
 
 
