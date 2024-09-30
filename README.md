@@ -1,8 +1,4 @@
-<div style="text-align:center;">
-    <img width="200px" height="200px" src="https://img.xwyue.com/i/2024/09/30/66fa59c2cb6f9.png" alt="s-sftp-upload">
-</di>
-
-
+<img src="https://img.xwyue.com/i/2024/09/30/66fa59c2cb6f9.png" widht="200" height="200" style="display:block; margin: auto;"/>
 
 # s-sftp-upload
 
