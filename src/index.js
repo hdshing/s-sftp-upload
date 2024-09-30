@@ -1,20 +1,19 @@
 const path = require('path');
 const fs = require('fs');
 const SFTPClient = require('ssh2-sftp-client');
-const archiver = require('archiver');
 const ProgressBar = require('progress'); // 进度条插件
 const fg = require('fast-glob');
 
 class ftpUpload {
     constructor(config) {
-        let { localPath, remotePath, privateKeyPath, zipToPath, ...ftpConfig } = config
+        let { localPath, remotePath, privateKeyPath, isBackup=false, backupPath="", ...ftpConfig } = config
         this.ftpConfig = ftpConfig
         this.localDirPath = localPath;
         this.remoteDirPath = remotePath; // '/app/bus/admin'
-        this.zipToPath = zipToPath || '/zipBackup' // 打包备份存放的路径
         this.sftp = null;
         this.bar = null;
-
+        this.backupPath = backupPath || remotePath // 打包备份存放的路径
+        this.isBackup = isBackup
         if (privateKeyPath) {
             this.ftpConfig.privateKey = fs.readFileSync(privateKeyPath)
         }
@@ -40,8 +39,12 @@ class ftpUpload {
             // console.log('Start Uploading...');
             return this.uploadDirectory(this.localDirPath, this.remoteDirPath);
         }).then(async () => {
-            await this.compressedUpload(this.localDirPath, `${this.remoteDirPath}${this.zipToPath}`)
-            console.log('全部文件处理完毕!!!😀');
+            if(this.isBackup === true){
+                // await this.compressedUpload(this.localDirPath, `${this.remoteDirPath}${this.backupPath}`)
+                await this.compressedUpload(this.localDirPath, this.backupPath)
+            }
+            let t='上传完毕!!!😀'
+            process.stdout.isTTY ? console.log('\x1b[32m' + t + '\x1b[0m') : console.log(t)
             this.sftp.end();
         }).catch(err => {
             console.error('Upload Error ', err);
@@ -88,6 +91,7 @@ class ftpUpload {
     }
     // 上传指定本地文件夹内容
     async uploadDirectory(localDir, remoteDir) {
+        await this.checkCreateDir(remoteDir);
         const files = fs.readdirSync(localDir);
         for (const file of files) {
             const localFilePath = path.join(localDir, file);
@@ -95,10 +99,8 @@ class ftpUpload {
             const stats = fs.lstatSync(localFilePath);
             // 判断是否为目录
             if (stats.isDirectory()) {
-                // console.log(`发现文件夹: ${localFilePath}, 递归上传`);
                 // 检查远程路径是否存在
                 const exists = await this.sftp.exists(remoteFilePath);
-
                 if (exists === 'd') {
                     // 如果远程路径已是目录，递归上传
                     await this.uploadDirectory(localFilePath, remoteFilePath);
@@ -118,22 +120,18 @@ class ftpUpload {
     };
     // 压缩文件上传
     async compressedUpload(dirPath, remoteDir) {
+        const archiver = require('archiver');
         return new Promise(async (resolve, reject) => {
             const zipFileName = `${this.getCurrentTime()}.zip` // 压缩包文件名
             const tempZipFilePath = path.resolve(__dirname, zipFileName) // 临时本地压缩包
-            const remoteOutputFilePath = `${remoteDir}/${zipFileName}` // !!! 远程输出文件路径需要反斜杆‘/’ !!!
-            // 检查远程路径是否存在
-            const exists = await this.sftp.exists(remoteDir);
-            if (!exists) {
-                // console.log(`远程 ${remoteDir} 不存在，创建中...`)
-                await this.sftp.mkdir(remoteDir, true);
-            }
+            const remoteOutputFilePath = `${remoteDir}/${zipFileName}` // * 远程输出文件路径需要反斜杆‘/’ *
+            await this.checkCreateDir(remoteDir);
             // 创建输出流
             const output = fs.createWriteStream(tempZipFilePath);
             const archive = archiver('zip', { zlib: { level: 9 } });  // 压缩级别 9
             // 监听输出流关闭事件，确保输出流关闭
             output.on('close', async () => {
-                console.log(`打包完成，文件大小：${archive.pointer()}`);
+                // console.log(`打包完成，文件大小：${archive.pointer()}`);
                 await this.handleUpload(tempZipFilePath, remoteOutputFilePath)
                 try {
                     // console.log('删除临时文件')
@@ -155,6 +153,17 @@ class ftpUpload {
             archive.finalize();
         })
     }
+    // 检查远程路径是否存在，不存在则创建
+    checkCreateDir(dirPath) {
+        return new Promise(async (resolve, reject) => {
+            const exists = await this.sftp.exists(dirPath);
+            if (!exists) {
+                // console.log(`远程 ${dirPath} 不存在，创建中...`)
+                await this.sftp.mkdir(dirPath, true);
+            }
+            resolve()
+        })
+    }
     // 获取当前时间 ----- 工具函数
     getCurrentTime() {
         const now = new Date();
@@ -164,7 +173,7 @@ class ftpUpload {
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const seconds = now.getSeconds().toString().padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}_${minutes}_${seconds}`;
+        return `${year}-${month}-${day} ${hours}-${minutes}-${seconds}`;
     }
 }
 
