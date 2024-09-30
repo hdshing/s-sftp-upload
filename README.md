@@ -1,5 +1,5 @@
 <p align="center">
-  <a target="_blank" href="https://www.npmjs.com/package/s-sftp-upload">
+  <a href="#安装">
     <img alt="s-sftp-upload logo" src="https://img.xwyue.com/i/2024/09/30/66fa59c2cb6f9.png" width="200">
   </a>
   <br/>
@@ -29,15 +29,15 @@ const path = require('path');
 const ftpUpload = require('s-sftp-upload');
 
 const ftpU = new ftpUpload({
-    host: 'xx.xx.xx.xx',  // 必填
-    port: 22,  // 必填
-    username: 'root',  // 必填
-    password: '123456',  // 必填
-    localPath: path.resolve(__dirname, './dist'),  // 必填，指定本地上传目录，例：./dist
-    remotePath: '/app/bus/admin',  // 必填，指定远程服务器上传目录，例：/app/bus/admin
-    
-    isBackup: true,  // 选填
-    backupPath: '/app/bus/admin/backup',  // 选填
+    host: 'xx.xx.xx.xx',
+    port: 22,
+    username: 'root',
+    password: '123456',
+    localPath: path.resolve(__dirname, './dist'), // 指定需上传的本地目录
+    remotePath: '/app/bus/admin', //指定服务器目录
+    // 以下可选填
+    isBackup: true,
+    backupPath: '/app/bus/admin/backup',
 })
 // 开始执行上传
 ftpU.start()

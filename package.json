@@ -1,6 +1,6 @@
 {
   "name": "s-sftp-upload",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "shing0727@foxmail.com",
   "description": "一个简单的ftp上传工具，主要用于项目部署并可选将上传的文件打包备份服务器。",
   "keywords": [
